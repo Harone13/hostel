@@ -1,0 +1,86 @@
+    function sendData(data = {}){
+
+     var ajax = new XMLHttpRequest();
+    
+     ajax.addEventListener('readystatechange', function(){
+        if(ajax.readyState == 4 && ajax.status == 200){
+            hundleResult(ajax.responseText);
+        }
+     })
+
+     ajax.open("POST", "<?= ROOT ?>ajax_category", true);
+     ajax.send(JSON.stringify(data));
+
+   }
+
+
+
+   function hundleResult(result){
+    if (result != ""){ 
+      var obj = JSON.parse(result);
+      var $table_body1 = document.querySelector("#table-body1");
+        $table_body1.innerHTML = obj.catdata;
+      var $table_body2 = document.querySelector("#table-body2");
+        $table_body2.innerHTML = obj.subdata;
+
+      if (obj.msg_type == "info"){
+      if (obj.type == "Add"){
+
+        alert(obj.msg);
+        showAddNew();
+        var $table_body1 = document.querySelector("#table-body1");
+        $table_body1.innerHTML = obj.catdata;
+        var $table_body2 = document.querySelector("#table-body2");
+        $table_body2.innerHTML = obj.subdata;
+
+      }  
+    }
+      }  
+    }
+
+
+
+
+
+
+    function collectData(EdAdd){
+
+        if (EdAdd == "edit"){
+         var cat_input = document.querySelector("#edit-cat");
+         var cat_id_input = document.querySelector("#edit-id");
+         var parentcat_input = document.querySelector("#edit-parentcat");
+    
+        }else{
+         var cat_input = document.querySelector("#category");
+         var parent_input = document.querySelector("#add-cat");
+        }
+          if(cat_input.value.trim() == "" || !isNaN(cat_input.value.trim())){
+    
+              alert("Please Enter a valid Cat");
+          }else{
+              var data = cat_input.value.trim();
+    
+              if (EdAdd == "edit"){
+                var id = cat_id_input.value.trim();
+                var parent_id = parentcat_input.value.trim(); 
+    
+                sendData({
+                  data:data,
+                  id:id,
+                  parent_id:parent_id,
+                  data_type:'edit_category'
+                });
+    
+              }else{
+                var id = parent_input.value.trim();
+                
+                sendData({
+                  data:data,
+                  id:id,
+                  data_type:'add_category'
+                });
+    
+              }          
+          }
+    
+       }
